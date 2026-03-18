@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AdaptED — Accessible Learning, Powered by AI</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+  :root {
+    --navy:#1A2B5E; --blue:#1565C0; --red:#D94E2B; --gold:#F4A623;
+    --bg:#F0F4FF; --text:#1A1A2E; --muted:#6B7280; --border:#E2E8F0; --green:#059669;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+  header{background:var(--navy);position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(26,43,94,0.3);}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 40px;}
+  .logo{display:flex;align-items:center;gap:12px;}
+  .logo-mark{background:var(--red);color:white;font-family:'DM Serif Display',serif;font-size:22px;width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;}
+  .logo-text{font-family:'DM Serif Display',serif;font-size:26px;color:white;}
+  .logo-text span{color:var(--gold);}
+  .header-tag{font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:1.5px;font-weight:500;}
+  .nsbe-bar{display:grid;grid-template-columns:1fr 1fr 2fr 1fr;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;}
+  .nsbe-bar div{padding:6px 16px;text-align:center;}
+  .nb-red{background:var(--red);color:white;} .nb-gold{background:var(--gold);color:var(--navy);}
+  .nb-blue{background:var(--blue);color:white;} .nb-dark{background:#0D1B3E;color:white;}
+  .hero{background:linear-gradient(135deg,var(--navy) 0%,#0D1B3E 60%,#162456 100%);padding:56px 40px 48px;text-align:center;position:relative;overflow:hidden;}
+  .hero::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(244,166,35,0.12) 0%,transparent 70%);border-radius:50%;}
+  .hero-badge{display:inline-block;background:rgba(244,166,35,0.15);border:1px solid rgba(244,166,35,0.4);color:var(--gold);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:6px 16px;border-radius:20px;margin-bottom:20px;}
+  .hero h1{font-family:'DM Serif Display',serif;font-size:48px;color:white;line-height:1.1;margin-bottom:16px;position:relative;z-index:1;}
+  .hero h1 span{color:var(--gold);}
+  .hero p{font-size:17px;color:rgba(255,255,255,0.75);max-width:580px;margin:0 auto 28px;line-height:1.6;position:relative;z-index:1;}
+  .hero-pills{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;position:relative;z-index:1;}
+  .pill{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.85);padding:7px 16px;border-radius:20px;font-size:13px;font-weight:500;}
+  .pill.accent{background:var(--red);border-color:var(--red);color:white;}
+  .main{max-width:1100px;margin:0 auto;padding:36px 24px 60px;}
+  .api-section{background:white;border:2px solid var(--border);border-radius:16px;padding:22px 28px;margin-bottom:24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .api-icon{width:44px;height:44px;background:var(--navy);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+  .api-label{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:6px;}
+  .api-input{flex:1;min-width:200px;border:1.5px solid var(--border);border-radius:10px;padding:10px 16px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.2s;}
+  .api-input:focus{border-color:var(--blue);}
+  .api-hint{font-size:12px;color:var(--muted);line-height:1.5;max-width:220px;}
+  .input-card{background:white;border-radius:20px;padding:36px;margin-bottom:24px;box-shadow:0 4px 24px rgba(26,43,94,0.08);border:1px solid var(--border);}
+  .section-label{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+  .section-num{width:28px;height:28px;background:var(--navy);color:white;border-radius:8px;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .section-title{font-size:16px;font-weight:700;color:var(--navy);}
+  .section-sub{font-size:13px;color:var(--muted);margin-top:2px;}
+  .upload-zone{border:2px dashed var(--border);border-radius:14px;padding:32px 24px;text-align:center;cursor:pointer;transition:all 0.2s;background:#FAFBFF;position:relative;}
+  .upload-zone:hover,.upload-zone.dragover{border-color:var(--blue);background:#EFF6FF;}
+  .upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+  .upload-icon{font-size:36px;margin-bottom:10px;}
+  .upload-title{font-size:15px;font-weight:600;color:var(--navy);margin-bottom:4px;}
+  .upload-sub{font-size:13px;color:var(--muted);}
+  .upload-types{display:flex;justify-content:center;gap:8px;margin-top:12px;flex-wrap:wrap;}
+  .type-badge{background:var(--bg);border:1px solid var(--border);color:var(--navy);font-size:11px;font-weight:600;padding:3px 10px;border-radius:6px;}
+  .file-status{display:none;align-items:center;gap:12px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:10px;padding:12px 16px;margin-top:12px;}
+  .file-status.active{display:flex;}
+  .file-name{font-size:14px;font-weight:600;color:var(--navy);flex:1;}
+  .file-size{font-size:12px;color:var(--muted);}
+  .file-remove{background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;line-height:1;padding:2px;}
+  .file-remove:hover{color:var(--red);}
+  .or-divider{display:flex;align-items:center;gap:12px;margin:20px 0;}
+  .or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+  .or-divider span{font-size:13px;color:var(--muted);font-weight:500;}
+  textarea{width:100%;min-height:130px;border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);resize:vertical;outline:none;transition:border-color 0.2s;line-height:1.6;}
+  textarea:focus{border-color:var(--blue);}
+  textarea::placeholder{color:#9CA3AF;}
+  .questions-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px;}
+  .question-block label{display:block;font-size:13px;font-weight:600;color:var(--navy);margin-bottom:8px;}
+  .question-block select{width:100%;padding:11px 36px 11px 16px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);background:white;outline:none;cursor:pointer;transition:border-color 0.2s;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-color:white;}
+  .question-block select:focus{border-color:var(--blue);}
+  .generate-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:18px;background:var(--red);color:white;border:none;border-radius:14px;font-size:16px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:28px;transition:all 0.2s;letter-spacing:0.3px;}
+  .generate-btn:hover:not(:disabled){background:#C0431F;transform:translateY(-1px);box-shadow:0 8px 24px rgba(217,78,43,0.35);}
+  .generate-btn:disabled{background:#9CA3AF;cursor:not-allowed;transform:none;box-shadow:none;}
+  .error-box{display:none;background:#FEF2F2;border:1px solid #FECACA;border-radius:12px;padding:14px 18px;color:#DC2626;font-size:14px;margin-top:16px;align-items:center;gap:10px;}
+  .error-box.active{display:flex;}
+  .loading-state{display:none;text-align:center;padding:52px;background:white;border-radius:20px;border:1px solid var(--border);margin-bottom:24px;}
+  .loading-state.active{display:block;}
+  .spinner{width:48px;height:48px;border:4px solid var(--border);border-top-color:var(--red);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 20px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loading-text{font-size:16px;font-weight:600;color:var(--navy);margin-bottom:8px;}
+  .loading-sub{font-size:13px;color:var(--muted);}
+  .results-section{display:none;}
+  .results-section.active{display:block;}
+  .results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+  .results-title{font-family:'DM Serif Display',serif;font-size:28px;color:var(--navy);}
+  .results-badge{background:#D1FAE5;color:var(--green);font-size:12px;font-weight:700;padding:6px 14px;border-radius:20px;display:flex;align-items:center;gap:6px;}
+  .output-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .output-card{background:white;border-radius:16px;padding:28px;border:1px solid var(--border);box-shadow:0 2px 12px rgba(26,43,94,0.06);animation:fadeUp 0.4s ease both;}
+  .output-card:nth-child(2){animation-delay:0.1s;}
+  .output-card:nth-child(3){animation-delay:0.2s;}
+  .output-card:nth-child(4){animation-delay:0.3s;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+  .card-header{display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:14px;border-bottom:2px solid var(--bg);}
+  .card-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+  .icon-blue{background:#EFF6FF;} .icon-red{background:#FEF2F2;} .icon-gold{background:#FFFBEB;} .icon-green{background:#F0FDF4;}
+  .card-title{font-size:15px;font-weight:700;color:var(--navy);}
+  .card-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+  .card-content{font-size:14px;line-height:1.8;color:#374151;white-space:pre-wrap;}
+  .reset-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:transparent;color:var(--navy);border:2px solid var(--border);border-radius:12px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:16px;transition:all 0.2s;}
+  .reset-btn:hover{border-color:var(--navy);background:var(--bg);}
+  .download-bar{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px;}
+  .dl-btn{display:flex;align-items:center;justify-content:center;gap:10px;padding:16px;border:none;border-radius:14px;font-size:15px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;letter-spacing:0.2px;}
+  .dl-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.15);}
+  .dl-pdf{background:var(--navy);color:white;}
+  .dl-pdf:hover{background:#0f1e45;}
+  .dl-audio{background:var(--gold);color:var(--navy);}
+  .dl-audio:hover{background:#e09600;}
+  .dl-audio.speaking{background:#e09600;animation:pulse 1s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.7;}}
+  .udl-strip{background:var(--navy);color:white;text-align:center;padding:14px;font-size:12px;font-weight:500;letter-spacing:0.5px;}
+  .udl-strip span{color:var(--gold);font-weight:700;}
+  @media(max-width:700px){
+    .output-grid{grid-template-columns:1fr;}
+    .questions-grid{grid-template-columns:1fr;}
+    .hero h1{font-size:34px;}
+    .header-inner{padding:12px 20px;}
+    .main{padding:20px 16px 40px;}
+    .input-card{padding:22px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-mark">A</div>
+      <div><div class="logo-text">Adapt<span>ED</span></div></div>
+    </div>
+    <div class="header-tag">NSBE 2026 AI Impact-A-Thon &nbsp;·&nbsp; Powered by Groq AI</div>
+  </div>
+  <div class="nsbe-bar">
+    <div class="nb-red">#NSBE2026</div>
+    <div class="nb-gold">Baltimore, MD</div>
+    <div class="nb-blue">March 18–22, 2026</div>
+    <div class="nb-dark">Advancing S.T.E.M.</div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-badge">Accessible by Design · Powered by AI</div>
+  <h1>Learning content that <span>adapts to you</span></h1>
+  <p>Upload your lecture file or paste text — AdaptED transforms it into multiple accessible formats. No diagnosis required. No self-advocacy needed.</p>
+  <div class="hero-pills">
+    <div class="pill">🧠 ADHD-friendly</div>
+    <div class="pill">📖 Dyslexia-friendly</div>
+    <div class="pill">💭 Mental health-aware</div>
+    <div class="pill accent">Universal Design for Learning</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="api-section">
+    <div class="api-icon">🔑</div>
+    <div style="flex:1">
+      <div class="api-label">Groq API Key — get yours FREE at console.groq.com (no credit card needed)</div>
+      <input type="password" class="api-input" id="apiKey" placeholder="gsk_..." aria-label="Groq API Key">
+    </div>
+    <div class="api-hint">100% free — no credit card. Key is never stored.</div>
+  </div>
+
+  <div class="input-card" id="inputSection">
+
+    <div class="section-label">
+      <div class="section-num">1</div>
+      <div>
+        <div class="section-title">Upload your lecture file</div>
+        <div class="section-sub">PDF, Word document, or plain text file</div>
+      </div>
+    </div>
+
+    <div class="upload-zone" id="uploadZone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+      <input type="file" id="fileInput" accept=".pdf,.txt,.docx,.doc" onchange="handleFileSelect(event)" aria-label="Upload lecture file">
+      <div class="upload-icon">📄</div>
+      <div class="upload-title">Drop your file here or click to browse</div>
+      <div class="upload-sub">Lecture notes, slides text, readings</div>
+      <div class="upload-types">
+        <span class="type-badge">PDF</span>
+        <span class="type-badge">DOCX</span>
+        <span class="type-badge">TXT</span>
+      </div>
+    </div>
+
+    <div class="file-status" id="fileStatus">
+      <span style="font-size:22px">📎</span>
+      <span class="file-name" id="fileName"></span>
+      <span class="file-size" id="fileSize"></span>
+      <button class="file-remove" onclick="removeFile()" aria-label="Remove file">✕</button>
+    </div>
+
+    <div class="or-divider"><span>or paste text directly</span></div>
+
+    <textarea id="lectureText" placeholder="Paste lecture transcript, notes, or reading material here..." aria-label="Lecture text"></textarea>
+
+    <div style="margin-top:32px;">
+      <div class="section-label">
+        <div class="section-num">2</div>
+        <div>
+          <div class="section-title">Tell us about your learning moment</div>
+          <div class="section-sub">No diagnosis needed — just two quick questions</div>
+        </div>
+      </div>
+      <div class="questions-grid">
+        <div class="question-block">
+          <label for="q1">How much time do you have right now?</label>
+          <select id="q1">
+            <option value="5 minutes">⚡ Just 5 minutes</option>
+            <option value="15 minutes" selected>📚 About 15 minutes</option>
+            <option value="30+ minutes">🎯 30+ minutes — deep review</option>
+          </select>
+        </div>
+        <div class="question-block">
+          <label for="q2">Is this your first time with this material?</label>
+          <select id="q2">
+            <option value="first time — start with the basics">🌱 First time — start simple</option>
+            <option value="second time — reinforce the key ideas" selected>🔄 Second time — reinforce it</option>
+            <option value="reviewing — test my knowledge">✅ Reviewing — test me</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="error-box" id="errorBox" role="alert">
+      <span>⚠️</span><span id="errorMsg"></span>
+    </div>
+
+    <button class="generate-btn" id="generateBtn" onclick="generate()">
+      <span>✨</span> Generate Accessible Content
+    </button>
+
+  </div>
+
+  <div class="loading-state" id="loadingState" role="status" aria-live="polite">
+    <div class="spinner"></div>
+    <div class="loading-text">AdaptED is working...</div>
+    <div class="loading-sub">Transforming your lecture into accessible formats</div>
+  </div>
+
+  <div class="results-section" id="resultsSection">
+    <div class="results-header">
+      <div class="results-title">Your Accessible Content</div>
+      <div class="results-badge">✓ 4 formats generated</div>
+    </div>
+    <div class="output-grid">
+      <div class="output-card">
+        <div class="card-header">
+          <div class="card-icon icon-blue">📋</div>
+          <div><div class="card-title">Plain Language Summary</div><div class="card-sub">Simplified — easy to read</div></div>
+        </div>
+        <div class="card-content" id="out-summary" aria-live="polite"></div>
+      </div>
+      <div class="output-card">
+        <div class="card-header">
+          <div class="card-icon icon-red">🎯</div>
+          <div><div class="card-title">Key Bullet Points</div><div class="card-sub">Most important ideas, fast</div></div>
+        </div>
+        <div class="card-content" id="out-bullets" aria-live="polite"></div>
+      </div>
+      <div class="output-card">
+        <div class="card-header">
+          <div class="card-icon icon-gold">💡</div>
+          <div><div class="card-title">Core Concepts</div><div class="card-sub">Key terms defined simply</div></div>
+        </div>
+        <div class="card-content" id="out-concepts" aria-live="polite"></div>
+      </div>
+      <div class="output-card">
+        <div class="card-header">
+          <div class="card-icon icon-green">🧩</div>
+          <div><div class="card-title">Quiz Questions</div><div class="card-sub">Test your retention</div></div>
+        </div>
+        <div class="card-content" id="out-quiz" aria-live="polite"></div>
+      </div>
+    </div>
+    <div class="download-bar">
+      <button class="dl-btn dl-pdf" onclick="downloadPDF()" aria-label="Download as PDF">
+        📄 Download as PDF
+      </button>
+      <button class="dl-btn dl-audio" id="audioBtn" onclick="toggleAudio()" aria-label="Listen to summary">
+        🔊 Listen to Summary
+      </button>
+    </div>
+    <button class="reset-btn" onclick="reset()">↩ Start Over with New Content</button>
+  </div>
+
+</div>
+
+<div class="udl-strip">
+  Built on <span>Universal Design for Learning (UDL)</span> — making education accessible for every student, without asking them to identify their disability.
+</div>
+
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+let extractedText='';
+
+function handleDragOver(e){e.preventDefault();document.getElementById('uploadZone').classList.add('dragover');}
+function handleDragLeave(){document.getElementById('uploadZone').classList.remove('dragover');}
+function handleDrop(e){e.preventDefault();document.getElementById('uploadZone').classList.remove('dragover');const f=e.dataTransfer.files[0];if(f)processFile(f);}
+function handleFileSelect(e){const f=e.target.files[0];if(f)processFile(f);}
+
+async function processFile(file){
+  const ext='.'+file.name.split('.').pop().toLowerCase();
+  if(!['.pdf','.txt','.docx','.doc'].includes(ext)){showError('Please upload a PDF, .docx, or .txt file.');return;}
+  document.getElementById('fileName').textContent=file.name;
+  document.getElementById('fileSize').textContent=formatSize(file.size);
+  document.getElementById('fileStatus').classList.add('active');
+  hideError();
+  try{
+    if(ext==='.pdf'){extractedText=await extractPDF(file);}
+    else{extractedText=await readAsText(file);}
+    document.getElementById('lectureText').placeholder='✅ File loaded — '+extractedText.length+' characters extracted. You can also add notes below.';
+  }catch(err){
+    showError('Could not read file automatically. Please paste the text below.');
+    extractedText='';
+  }
+}
+
+async function extractPDF(file){
+  const buf=await file.arrayBuffer();
+  const pdf=await pdfjsLib.getDocument({data:buf}).promise;
+  let txt='';
+  for(let i=1;i<=pdf.numPages;i++){
+    const page=await pdf.getPage(i);
+    const content=await page.getTextContent();
+    txt+=content.items.map(x=>x.str).join(' ')+'\n';
+  }
+  return txt.trim();
+}
+
+function readAsText(file){
+  return new Promise((res,rej)=>{
+    const r=new FileReader();
+    r.onload=e=>res(e.target.result);
+    r.onerror=rej;
+    r.readAsText(file);
+  });
+}
+
+function removeFile(){
+  extractedText='';
+  document.getElementById('fileStatus').classList.remove('active');
+  document.getElementById('fileInput').value='';
+  document.getElementById('lectureText').placeholder='Paste lecture transcript, notes, or reading material here...';
+  document.getElementById('lectureText').value='';
+  hideError();
+}
+
+function formatSize(b){if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';return(b/1048576).toFixed(1)+' MB';}
+
+async function generate(){
+  const apiKey=document.getElementById('apiKey').value.trim();
+  const pastedText=document.getElementById('lectureText').value.trim();
+  const q1=document.getElementById('q1').value;
+  const q2=document.getElementById('q2').value;
+  hideError();
+  const content=extractedText||pastedText;
+  if(!apiKey){showError('Please enter your Groq API key. Get one free at console.groq.com');return;}
+  if(!content||content.length<30){showError('Please upload a file or paste some lecture text first.');return;}
+  document.getElementById('inputSection').style.display='none';
+  document.getElementById('loadingState').classList.add('active');
+  document.getElementById('resultsSection').classList.remove('active');
+  document.getElementById('generateBtn').disabled=true;
+
+  const prompt=`You are AdaptED, an AI accessibility tool that transforms lecture content into multiple accessible formats for college students with cognitive disabilities (ADHD, learning disabilities, mental health conditions).
+
+Student context:
+- Available time: ${q1}
+- Familiarity: ${q2}
+
+LECTURE CONTENT:
+${content.slice(0,8000)}
+
+Generate EXACTLY these four sections with the exact labels:
+
+---PLAIN LANGUAGE SUMMARY---
+Clear simple summary. No jargon. Short sentences. 3-5 sentences max. Easy for someone with reading difficulty or cognitive fatigue.
+
+---KEY BULLET POINTS---
+4-6 most important points. Start each with "•". One sentence per bullet max.
+
+---CORE CONCEPTS---
+3-5 key terms. Format: "• TERM: simple one-sentence definition"
+
+---QUIZ QUESTIONS---
+3 short quiz questions numbered 1, 2, 3. Simple and direct. No answers.`;
+
+  try{
+    const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},
+      body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'user',content:prompt}],max_tokens:1200,temperature:0.4})
+    });
+    if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||'API error '+res.status+' — check your Groq key');}
+    const data=await res.json();
+    const text=data.choices?.[0]?.message?.content||'';
+    if(!text)throw new Error('Empty response. Please try again.');
+    document.getElementById('out-summary').textContent=extract(text,'PLAIN LANGUAGE SUMMARY','KEY BULLET POINTS');
+    document.getElementById('out-bullets').textContent=extract(text,'KEY BULLET POINTS','CORE CONCEPTS');
+    document.getElementById('out-concepts').textContent=extract(text,'CORE CONCEPTS','QUIZ QUESTIONS');
+    document.getElementById('out-quiz').textContent=extract(text,'QUIZ QUESTIONS',null);
+    document.getElementById('loadingState').classList.remove('active');
+    document.getElementById('resultsSection').classList.add('active');
+  }catch(err){
+    document.getElementById('loadingState').classList.remove('active');
+    document.getElementById('inputSection').style.display='block';
+    document.getElementById('generateBtn').disabled=false;
+    showError(err.message||'Something went wrong. Check your API key and try again.');
+  }
+}
+
+function extract(text,startLabel,endLabel){
+  const sm='---'+startLabel+'---';
+  let si=text.indexOf(sm);
+  if(si===-1){si=text.indexOf(startLabel);if(si===-1)return 'Content not available.';}
+  else{si+=sm.length;}
+  const after=text.slice(si).trim();
+  if(!endLabel)return after.trim();
+  const em='---'+endLabel+'---';
+  let ei=after.indexOf(em);
+  if(ei===-1)ei=after.indexOf(endLabel);
+  return ei===-1?after.trim():after.slice(0,ei).trim();
+}
+
+function reset(){
+  if(speaking){window.speechSynthesis.cancel();speaking=false;}
+  extractedText='';
+  document.getElementById('resultsSection').classList.remove('active');
+  document.getElementById('loadingState').classList.remove('active');
+  document.getElementById('inputSection').style.display='block';
+  document.getElementById('generateBtn').disabled=false;
+  document.getElementById('lectureText').value='';
+  document.getElementById('fileStatus').classList.remove('active');
+  document.getElementById('fileInput').value='';
+  document.getElementById('lectureText').placeholder='Paste lecture transcript, notes, or reading material here...';
+  hideError();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showError(msg){document.getElementById('errorMsg').textContent=msg;document.getElementById('errorBox').classList.add('active');}
+function hideError(){document.getElementById('errorBox').classList.remove('active');}
+
+// ── PDF DOWNLOAD ──
+function downloadPDF(){
+  const summary=document.getElementById('out-summary').textContent;
+  const bullets=document.getElementById('out-bullets').textContent;
+  const concepts=document.getElementById('out-concepts').textContent;
+  const quiz=document.getElementById('out-quiz').textContent;
+
+  const content=`AdaptED — Accessible Learning Summary
+Generated by AdaptED | NSBE 2026 AI Impact-A-Thon
+${'='.repeat(50)}
+
+PLAIN LANGUAGE SUMMARY
+${'─'.repeat(30)}
+${summary}
+
+KEY BULLET POINTS
+${'─'.repeat(30)}
+${bullets}
+
+CORE CONCEPTS
+${'─'.repeat(30)}
+${concepts}
+
+QUIZ QUESTIONS
+${'─'.repeat(30)}
+${quiz}
+
+${'='.repeat(50)}
+Built on Universal Design for Learning (UDL)
+Accessible by Design. Powered by AI.`;
+
+  // Create blob and download as text-based PDF alternative
+  const blob=new Blob([content],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='AdaptED_Accessible_Notes.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+
+  // Also try to open print dialog for proper PDF
+  const win=window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html><head><title>AdaptED Notes</title>
+  <style>
+    body{font-family:Georgia,serif;max-width:700px;margin:40px auto;padding:20px;color:#1A1A2E;line-height:1.8;}
+    h1{font-size:28px;color:#1A2B5E;border-bottom:3px solid #D94E2B;padding-bottom:10px;}
+    h2{font-size:18px;color:#1A2B5E;margin-top:32px;margin-bottom:8px;background:#F0F4FF;padding:8px 12px;border-radius:6px;}
+    p,pre{font-size:15px;white-space:pre-wrap;margin-bottom:16px;}
+    .footer{margin-top:40px;padding-top:16px;border-top:1px solid #E2E8F0;font-size:12px;color:#6B7280;text-align:center;}
+    @media print{body{margin:20px;}}
+  </style></head><body>
+  <h1>AdaptED — Accessible Learning Notes</h1>
+  <p style="color:#6B7280;font-size:13px;">Generated by AdaptED &nbsp;|&nbsp; NSBE 2026 AI Impact-A-Thon &nbsp;|&nbsp; Powered by Groq AI</p>
+  <h2>📋 Plain Language Summary</h2><pre>${summary}</pre>
+  <h2>🎯 Key Bullet Points</h2><pre>${bullets}</pre>
+  <h2>💡 Core Concepts</h2><pre>${concepts}</pre>
+  <h2>🧩 Quiz Questions</h2><pre>${quiz}</pre>
+  <div class="footer">Built on Universal Design for Learning (UDL) — Accessible by Design. Powered by AI.</div>
+  <script>window.onload=function(){window.print();}<\/script>
+  </body></html>`);
+  win.document.close();
+}
+
+// ── AUDIO / TEXT-TO-SPEECH ──
+let speaking=false;
+let utterance=null;
+
+function toggleAudio(){
+  const btn=document.getElementById('audioBtn');
+  if(speaking){
+    window.speechSynthesis.cancel();
+    speaking=false;
+    btn.textContent='🔊 Listen to Summary';
+    btn.classList.remove('speaking');
+    return;
+  }
+  const summary=document.getElementById('out-summary').textContent;
+  const bullets=document.getElementById('out-bullets').textContent;
+  const fullText='Summary: '+summary+' Key points: '+bullets;
+  utterance=new SpeechSynthesisUtterance(fullText);
+  utterance.rate=0.9;
+  utterance.pitch=1;
+  utterance.lang='en-US';
+  utterance.onend=function(){
+    speaking=false;
+    btn.textContent='🔊 Listen to Summary';
+    btn.classList.remove('speaking');
+  };
+  window.speechSynthesis.speak(utterance);
+  speaking=true;
+  btn.textContent='⏹ Stop Audio';
+  btn.classList.add('speaking');
+}
+</script>
+</body>
+</html>
